@@ -1,5 +1,6 @@
 # Project config variables
 SITE_NAME := <SITE_NAME>
+# NOTE: PROJECT_ID Needs to be unique across all of GCP (and < 30 characters...)
 PROJECT_ID := $(SITE_NAME)-project
 REGION := us-central1
 ZONE := us-central1-a
@@ -138,11 +139,12 @@ add-firewall-rules:
 		--target-tags=https-server \
         --allow tcp:443
 
-# Must be run once to enable docker to push to google container registry
+# Must be run once to enable local docker to push to google container registry
 .PHONY: configure-docker
 configure-docker:
 	gcloud auth configure-docker
 
+# Must be run once to enable remote docker to pull from google container registry
 .PHONY: configure-gcr
 configure-gcr:
 	gcloud compute ssh $(INSTANCE_NAME) \
