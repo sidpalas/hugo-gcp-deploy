@@ -85,7 +85,6 @@ deploy: build-tag-push cleanup-remote-containers
 		--project=$(PROJECT_ID) \
 		--zone=$(ZONE) -- \
 		docker run --restart=unless-stopped -p 80:80 gcr.io/$(PROJECT_ID)/$(IMAGE_NAME):$(IMAGE_TAG)
-		# docker run --restart=unless-stopped -p 80:80 -m 4M --cpus=0.01 gcr.io/$(PROJECT_ID)/$(IMAGE_NAME):$(IMAGE_TAG)
 
 .PHONY: build-tag-push
 build-tag-push: build-container
