@@ -17,9 +17,8 @@ help:
 	@echo __ 1. run $$ make create-project
 	@echo __ 2. enable billing using the project link
 	@echo __ 3. run $$ make vm-setup
-	@echo __ 4. run $$ make configure-docker [only required if you have never used docker w/ gcr]
-	@echo __ 5. run $$ make deploy
-	@echo __ 6. run $$ make list-vms // create A record for domain
+	@echo __ 4. run $$ make deploy
+	@echo __ 5. run $$ make list-vms // create A record for domain
 
 ################################################################
 #
