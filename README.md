@@ -2,6 +2,8 @@
 
 This project is to create a site with [Hugo](https://gohugo.io/) and deploy it to GCP in < 5min.
 
+**NOTE:** For a static site like this, the built in `hugo deploy` approach to host directly within a GCP/AWS/Azure bucket is more practical and scaleable, but I wanted to familiarize myself with setting up an nginx server and eventually want to do some benchmarking on the f1-micro instance to see what kind of load it can handle.
+
 Before starting, update:
 
         SITE_NAME := <SITE_NAME>
