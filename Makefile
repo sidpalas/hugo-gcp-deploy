@@ -41,7 +41,7 @@ create-site:
 
 .PHONY: build-site
 build-site:
-	hugo -D
+	HUGO_ENV=production hugo
 
 .PHONY: run-hugo-server
 run-hugo-server:
@@ -69,6 +69,14 @@ ssh:
 		--project=$(PROJECT_ID) \
 		--zone=$(ZONE)
 
+.PHONY: build-tag-push
+build-tag-push: build-container
+	@echo "Did you update the IMAGE_TAG? (y or n)"; \
+	read UPDATED; \
+	if [ $$UPDATED != "y" ]; then echo you didn\'t answer \'y\'... aborting; exit 1 ; fi
+	docker tag $(IMAGE_NAME) gcr.io/$(PROJECT_ID)/$(IMAGE_NAME):$(IMAGE_TAG);
+	docker push gcr.io/$(PROJECT_ID)/$(IMAGE_NAME):$(IMAGE_TAG);
+
 .PHONY: cleanup-remote-containers
 cleanup-remote-containers:
 	# Using dash in front of the following command 
@@ -85,14 +93,6 @@ deploy: build-tag-push cleanup-remote-containers
 		--project=$(PROJECT_ID) \
 		--zone=$(ZONE) -- \
 		docker run --restart=unless-stopped -p 80:80 gcr.io/$(PROJECT_ID)/$(IMAGE_NAME):$(IMAGE_TAG)
-
-.PHONY: build-tag-push
-build-tag-push: build-container
-	@echo "Did you update the IMAGE_TAG? (y or n)"; \
-	read UPDATED; \
-	if [ $$UPDATED != "y" ]; then echo you didn\'t answer \'y\'... aborting; exit 1 ; fi
-	docker tag $(IMAGE_NAME) gcr.io/$(PROJECT_ID)/$(IMAGE_NAME):$(IMAGE_TAG);
-	docker push gcr.io/$(PROJECT_ID)/$(IMAGE_NAME):$(IMAGE_TAG);
 
 ################################################################
 #
