@@ -9,7 +9,7 @@ This project is to create a site with [Hugo](https://gohugo.io/) and deploy it t
 Before starting, update the following:
 
         <SITE_NAME> (within ./Makefile, e.g. my-website)
-        <DOMAIN> (within ./Caddyfile, e.g. my-website.com)
+        <DOMAIN(S)> (within ./Caddyfile, e.g. my-website.com www.my-website.com)
         <EMAIL_ADDRESS> (within ./Caddyfile, e.g. my.name@gmail.com)
 
 to their appropriate values.
