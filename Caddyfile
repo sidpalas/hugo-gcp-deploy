@@ -1,0 +1,9 @@
+<DOMAIN>
+
+tls <EMAIL_ADDRESS>
+
+browse
+
+log stdout
+
+errors stdout

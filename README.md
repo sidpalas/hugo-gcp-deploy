@@ -4,13 +4,15 @@ This project is to create a site with [Hugo](https://gohugo.io/) and deploy it t
 
 ---
 
-**NOTE:** For a static site like this, the built in `hugo deploy` approach to host directly within a GCP/AWS/Azure bucket is more practical and scalable, but I wanted to familiarize myself with setting up an nginx server and eventually want to do some benchmarking on the f1-micro instance to see what kind of load it can handle.
+**NOTE:** For a static site like this, the built in `hugo deploy` approach to host directly within a GCP/AWS/Azure bucket is more practical and scalable, but I wanted to familiarize myself with various server options (first I used [nginx](https://www.nginx.com/), and then switched to [caddy](https://caddyserver.com/v1/) b/c of its automatic https config!) and eventually want to do some benchmarking on the f1-micro instance to see what kind of load it can handle.
 
-Before starting, update:
+Before starting, update the following:
 
-        SITE_NAME := <SITE_NAME>
+        <SITE_NAME> (within ./Makefile, e.g. my-website)
+        <DOMAIN> (within ./Caddyfile, e.g. my-website.com)
+        <EMAIL_ADDRESS> (within ./Caddyfile, e.g. my.name@gmail.com)
 
-within the `./Makefile` to reflect the name of your site.
+to their appropriate values.
 
 ### Prerequisites
 - Install hugo (`brew install hugo`)
@@ -33,13 +35,14 @@ within the `./Makefile` to reflect the name of your site.
     - Configures VM docker install to be able to use google container registry
 5) Run `$make deploy`
     - Builds hugo site
-    - Builds nginx based docker container containing site files
+    - Builds caddy based docker container containing site files
     - Tags and pushes to gcr
     - Removes currently running containers on VM
     - Starts container on VM using new container image
 6) Run `$make list-vms` --> create A record for domain (not automated)
     - Go to your DNS provider and point your domain to the VM static IP
+    - It's also useful to add a www CNAME record (to automatiaclly point requests like www.my-website.com to my-website.com)
 
 ### TODO:
-- Set up HTTPS    
-- Adjust nginx config
+- Tune caddy config
+- Add CDN (eventually)

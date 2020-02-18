@@ -1,2 +1,6 @@
-FROM nginx:1.17-alpine
-COPY ./public /usr/share/nginx/html
+FROM abiosoft/caddy:1.0.3
+COPY ./public /srv
+
+ENV ACME_AGREE=true # Agrees to letsencrypt license agreement
+COPY ./Caddyfile /etc/Caddyfile
+

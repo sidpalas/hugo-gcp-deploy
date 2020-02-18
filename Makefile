@@ -4,7 +4,7 @@ SITE_NAME := <SITE_NAME>
 PROJECT_ID := $(SITE_NAME)-project
 REGION := us-central1
 ZONE := us-central1-a
-IMAGE_NAME := $(SITE_NAME)-nginx
+IMAGE_NAME := $(SITE_NAME)-caddy
 MACHINE_TYPE := f1-micro
 VM_IMAGE := projects/cos-cloud/global/images/cos-69-10895-385-0
 INSTANCE_NAME := cos-$(MACHINE_TYPE)
@@ -51,10 +51,6 @@ run-hugo-server:
 build-container: build-site
 	docker build ./ --tag $(IMAGE_NAME)
 
-.PHONY: run-nginx-server
-run-nginx-server:
-	docker run -p 80:80 $(IMAGE_NAME):latest
-
 ################################################################
 #
 # Remote Operations
@@ -92,7 +88,7 @@ deploy: build-tag-push cleanup-remote-containers
 	gcloud compute ssh $(INSTANCE_NAME) \
 		--project=$(PROJECT_ID) \
 		--zone=$(ZONE) -- \
-		docker run --restart=unless-stopped -p 80:80 gcr.io/$(PROJECT_ID)/$(IMAGE_NAME):$(IMAGE_TAG)
+		docker run --restart=unless-stopped -p 80:80 -p 443:443 gcr.io/$(PROJECT_ID)/$(IMAGE_NAME):$(IMAGE_TAG) &
 
 ################################################################
 #
@@ -166,4 +162,3 @@ vm-setup:
 	$(MAKE) configure-docker
 	$(MAKE) configure-gcr
 	$(MAKE) list-vms
-
