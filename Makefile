@@ -188,10 +188,6 @@ enable-more-apis:
 	gcloud services enable sourcerepo.googleapis.com --project=$(PROJECT_ID)
 	gcloud services enable cloudbuild.googleapis.com --project=$(PROJECT_ID)
 
-.PHONY: create-hugo-builder
-create-hugo-builder:
-	cd ./hugo-builder && $(MAKE) SITE_NAME=$(SITE_NAME) build-tag-push
-
 .PHONY: add-iam-roles
 add-iam-roles:
 	gcloud projects add-iam-policy-binding $(PROJECT_ID) \
@@ -232,6 +228,5 @@ create-trigger:
 .PHONY setup-cloud-build:
 setup-cloud-build:
 	$(MAKE) enable-more-apis
-	$(MAKE) SITE_NAME=$(SITE_NAME) create-hugo-builder
 	$(MAKE) add-iam-roles
 	$(MAKE) create-trigger
