@@ -19,7 +19,7 @@ steps:
     git submodule update
 # build hugo site
 # See ./hugo-builder/README.md
-- name: 'gcr.io/$PROJECT_ID/hugo-builder'
+- name: 'sidpalas/cloud-builder-hugo:0.64.1'
 # build the container image
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/$_IMAGE_NAME:$COMMIT_SHA', '.']
