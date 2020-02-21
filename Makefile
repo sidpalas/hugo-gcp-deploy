@@ -89,7 +89,7 @@ deploy: build-tag-push cleanup-remote-containers
 	gcloud compute ssh $(INSTANCE_NAME) \
 		--project=$(PROJECT_ID) \
 		--zone=$(ZONE) -- \
-		'docker run --restart=unless-stopped -p 80:80 -p 443:443 -v $$HOME/.caddy:/root/.caddy gcr.io/$(PROJECT_ID)/$(IMAGE_NAME):$(IMAGE_TAG)' &
+		'docker run -d --restart=unless-stopped -p 80:80 -p 443:443 -v $$HOME/.caddy:/root/.caddy gcr.io/$(PROJECT_ID)/$(IMAGE_NAME):$(IMAGE_TAG)' &
 
 ################################################################
 #
