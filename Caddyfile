@@ -1,9 +1,31 @@
-<DOMAIN(S)>
+############################## 
+#
+# Test config
+# Use this before you connect your site to your domain
+# The site will be served over http on port 80 and accept
+# Connections from any domain
+# 
+##############################
 
-tls <EMAIL_ADDRESS>
+:80 {
+    browse
+    log stdout
+    errors stdout
+}
 
-browse
 
-log stdout
 
-errors stdout
+############################## 
+#
+# Actual config
+# Once you have modified your DNS 
+# settings use this config to set up https
+# 
+##############################
+
+#<DOMAIN(S)> {
+#    tls <EMAIL_ADDRESS>
+#    browse
+#    log stdout
+#    errors stdout
+#}
