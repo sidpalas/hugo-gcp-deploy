@@ -19,7 +19,8 @@ help:
 	@echo __ 2. enable billing using the project link
 	@echo __ 3. run $$ make vm-setup
 	@echo __ 4. run $$ make deploy
-	@echo __ 5. run $$ make list-vms // create A record for domain
+	@echo __ 5. run $$ make list-vms // create A + CNAME record for domain
+	@echo __ 6. modify the Caddyfile and redeploy to configure https
 
 ################################################################
 #
@@ -162,3 +163,75 @@ vm-setup:
 	$(MAKE) configure-docker
 	$(MAKE) configure-gcr
 	$(MAKE) list-vms
+
+################################################################
+#
+# Cloud Build Setup
+#
+################################################################
+
+USER := <USER_NAME> # username when SSHing into VM (used to specify /home/USER path)
+REPO_NAME := <REPO_NAME>
+
+# Instructions
+.PHONY: help-cloud-build
+help-cloud-build:
+	@echo __ 0. Follow https://cloud.google.com/source-repositories/docs/mirroring-a-github-repository to mirror github repo to cloud source repo
+	# Alternatively, just use cloud source to begin with... (I just prefer keeping my code in one place and that happens to be GitHub right now).#
+	# This was necessary because of the theme being used as a git submodule (https://github.com/GoogleCloudPlatform/cloud-builders/issues/26)
+
+	@echo __ 1. Set USER and REPO_NAME variables in Makefile
+	@echo __ 2. run $$ make setup-cloud-build
+
+.PHONY: enable-more-apis
+enable-more-apis:
+	gcloud services enable sourcerepo.googleapis.com --project=$(PROJECT_ID)
+	gcloud services enable cloudbuild.googleapis.com --project=$(PROJECT_ID)
+
+.PHONY: create-hugo-builder
+create-hugo-builder:
+	cd ./hugo-builder && $(MAKE) SITE_NAME=$(SITE_NAME) build-tag-push
+
+.PHONY: add-iam-roles
+add-iam-roles:
+	gcloud projects add-iam-policy-binding $(PROJECT_ID) \
+		--member serviceAccount:$$(gcloud projects describe $(PROJECT_ID) --format="value(projectNumber)")@cloudbuild.gserviceaccount.com \
+		--role roles/compute.instanceAdmin.v1
+	gcloud projects add-iam-policy-binding $(PROJECT_ID) \
+		--member serviceAccount:$$(gcloud projects describe $(PROJECT_ID) --format="value(projectNumber)")@cloudbuild.gserviceaccount.com \
+		--role roles/iam.serviceAccountUser
+
+###################################### 
+#
+# Actual pipeline: See cloudbuild.yaml
+#
+#   1) init and update submodule
+#
+#   Tip: 
+# 	  Use ssh when adding the submodule as the remote (so pushing is easier) but change to https 
+#     in .gitmodules and .git/config to enable cloud builder to access
+#
+#   2) build site with hugo
+#   3) build container image 
+#	4) push container image
+#   5) stop running server
+#   6) start new server
+#
+######################################	
+
+# NOTE: must install gcloud beta components)
+.PHONY create-trigger:
+create-trigger:
+	gcloud beta builds triggers create cloud-source-repositories \
+		--project=$(PROJECT_ID) \
+		--repo=$(REPO_NAME) \
+		--branch-pattern=master \
+		--build-config=cloudbuild.yaml \
+		--substitutions=_IMAGE_NAME=$(IMAGE_NAME),_SSH_STRING=$(USER)@$(INSTANCE_NAME),_ZONE=$(ZONE),_HOME=/home/$(USER)
+
+.PHONY setup-cloud-build:
+setup-cloud-build:
+	$(MAKE) enable-more-apis
+	$(MAKE) SITE_NAME=$(SITE_NAME) create-hugo-builder
+	$(MAKE) add-iam-roles
+	$(MAKE) create-trigger
