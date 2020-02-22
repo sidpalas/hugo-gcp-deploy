@@ -11,6 +11,13 @@ Accompanying Blog Posts:
 
 **NOTE:** For a static site like this, the built in `hugo deploy` approach to host directly within a GCP/AWS/Azure bucket might be easier/more scalable, but I wanted to familiarize myself with various server options (first I used [nginx](https://www.nginx.com/), and then switched to [caddy](https://caddyserver.com/v1/) b/c of its automatic https config!) and eventually want to do some benchmarking on the f1-micro instance to see what kind of load it can handle.
 
+### Prerequisites
+- Install hugo (`brew install hugo`)
+- Install docker (`brew cask install docker`)
+- Install google cloud sdk (`brew cask install google-cloud-sdk && gcloud init`)
+
+### Site Setup Instructions
+
 Before starting, update the following:
 
         <SITE_NAME> (within ./Makefile, e.g. my-website)
@@ -18,13 +25,6 @@ Before starting, update the following:
         <EMAIL_ADDRESS> (within ./Caddyfile, e.g. my.name@gmail.com)
 
 to their appropriate values.
-
-### Prerequisites
-- Install hugo (`brew install hugo`)
-- Install docker (`brew cask install docker`)
-- Install google cloud sdk (`brew cask install google-cloud-sdk && gcloud init`)
-
-### Instructions
 
 0) Run `$make create-site` (uses https://gohugo.io/getting-started/quick-start/)
     - Creates the hugo site and moves it into this directory
@@ -47,6 +47,23 @@ to their appropriate values.
 6) Run `$make list-vms` --> create A record for domain (not automated)
     - Go to your DNS provider and point your domain to the VM static IP
     - It's also useful to add a www CNAME record (to automatiaclly point requests like www.my-website.com to my-website.com)
+    - You also need to update the Caddyfile to reflect your domain and enable TLS
+
+### CI/CD Setup Instructions
+
+Before starting, update the following:
+
+        <SITE_NAME> (within ./Makefile, e.g. my-website)
+        <REPO_NAME> (within ./Makefile, e.g. my-cloud-source-repo-mirroring-a-github-repo)
+        <USER_NAME> (within ./Makefile, e.g. myusername -- this shoud be the username of the user when you SSH into the VM)
+
+to their appropriate values.
+
+0) Mirror GitHub repo in Cloud Source (https://cloud.google.com/source-repositories/docs/mirroring-a-github-repository) -- assuming primary site repo is in GitHub
+1) Run `make setup-cloud-build
+   - Enables the Cloud Build API
+   - Adds the necessary IAM roles to the Cloud Build service account
+   - Creates the Cloud build Trigger
 
 ### TODO:
 - Tune caddy config
