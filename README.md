@@ -2,6 +2,11 @@
 
 This project is to create a site with [Hugo](https://gohugo.io/) and deploy it to GCP in < 5min.
 
+Accompanying Blog Posts:
+
+ 1) [The Making of devopsdirective.com (Hugo, Caddy, + GCP)](https://devopsdirective.com/posts/hugo-and-caddy-on-gcp/) 
+ 2) [CI/CD for devopsdirective.com (Hugo + Cloud Build)](https://devopsdirective.com/posts/hugo-cloud-build/)
+
 ---
 
 **NOTE:** For a static site like this, the built in `hugo deploy` approach to host directly within a GCP/AWS/Azure bucket might be easier/more scalable, but I wanted to familiarize myself with various server options (first I used [nginx](https://www.nginx.com/), and then switched to [caddy](https://caddyserver.com/v1/) b/c of its automatic https config!) and eventually want to do some benchmarking on the f1-micro instance to see what kind of load it can handle.
