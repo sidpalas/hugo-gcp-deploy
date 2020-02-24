@@ -8,9 +8,8 @@
 ##############################
 
 :80 {
-    browse
     log stdout
-    errors stdout
+    errors stderr
 }
 
 
@@ -25,7 +24,6 @@
 
 #<DOMAIN(S)> {
 #    tls <EMAIL_ADDRESS>
-#    browse
 #    log stdout
-#    errors stdout
+#    errors stderr
 #}
