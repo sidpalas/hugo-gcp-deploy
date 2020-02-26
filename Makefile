@@ -1,5 +1,5 @@
 # Project config variables
-SITE_NAME := cloud-build-demo
+SITE_NAME := <SITE_NAME>
 # NOTE: PROJECT_ID Needs to be unique across all of GCP (and < 30 characters...)
 PROJECT_ID := $(SITE_NAME)-project
 REGION := us-central1
@@ -9,7 +9,7 @@ MACHINE_TYPE := f1-micro
 VM_IMAGE := projects/cos-cloud/global/images/cos-69-10895-385-0
 INSTANCE_NAME := cos-$(MACHINE_TYPE)
 ADDRESS_NAME := $(SITE_NAME)-ip
-IMAGE_TAG := 0.3
+IMAGE_TAG := 0.1
 
 # Instructions
 .PHONY: help
@@ -89,7 +89,7 @@ deploy: build-tag-push cleanup-remote-containers
 	gcloud compute ssh $(INSTANCE_NAME) \
 		--project=$(PROJECT_ID) \
 		--zone=$(ZONE) -- \
-		'docker run -d --restart=unless-stopped -p 80:80 -p 443:443 -v $$HOME/.caddy:/root/.caddy gcr.io/$(PROJECT_ID)/$(IMAGE_NAME):$(IMAGE_TAG)'
+		'docker run -d --restart=unless-stopped -p 80:80 -p 443:443 -v $$HOME/.caddy:/root/.caddy gcr.io/$(PROJECT_ID)/$(IMAGE_NAME):$(IMAGE_TAG)' &
 
 ################################################################
 #

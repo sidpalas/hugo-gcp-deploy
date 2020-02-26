@@ -1,4 +1,0 @@
-baseURL = "http://example.org/"
-languageCode = "en-us"
-title = "DevOps Directive Cloud Build Demo"
-theme = "ananke"
